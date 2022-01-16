@@ -14,7 +14,7 @@ func routes(_ app: Application) throws {
                 if let id = sticker.id?.uuidString {
                     let fm = FileManager.default
                     let path = app.directory.publicDirectory.appending(id)
-                    
+                    req.logger.info(Logger.Message(stringLiteral: path))
                     if let items = try? fm.contentsOfDirectory(atPath: path) {
                         for item in items {
                             if !item.contains("DS_Store") {
