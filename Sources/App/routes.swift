@@ -7,22 +7,26 @@ func routes(_ app: Application) throws {
     }
     
     app.get("stickers") { req async throws -> [Sticker] in
-        let stickers = try await StickerDB.query(on: req.db).all()
-        return stickers.map { sticker in
-            let sticker = Sticker(sticker)
-            if let id = sticker.id?.uuidString {
-                let fm = FileManager.default
-                let path = app.directory.publicDirectory.appending(id)
-                
-                if let items = try? fm.contentsOfDirectory(atPath: path) {
-                    for item in items {
-                        if !item.contains("DS_Store") {
-                            sticker.images.append("/\(id)/\(item)")                            
+        do {
+            let stickers = try await StickerDB.query(on: req.db).all()
+            return stickers.map { sticker in
+                let sticker = Sticker(sticker)
+                if let id = sticker.id?.uuidString {
+                    let fm = FileManager.default
+                    let path = app.directory.publicDirectory.appending(id)
+                    
+                    if let items = try? fm.contentsOfDirectory(atPath: path) {
+                        for item in items {
+                            if !item.contains("DS_Store") {
+                                sticker.images.append("/\(id)/\(item)")
+                            }
                         }
                     }
                 }
+                return sticker
             }
-            return sticker
+        } catch {
+            throw Abort(.internalServerError, reason: error.localizedDescription)
         }
     }
     
