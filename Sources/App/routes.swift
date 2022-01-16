@@ -16,7 +16,9 @@ func routes(_ app: Application) throws {
                     let path = app.directory.publicDirectory.appending(id)
                     req.logger.info(Logger.Message(stringLiteral: path))
                     if let items = try? fm.contentsOfDirectory(atPath: path) {
+                        req.logger.info(Logger.Message(stringLiteral: "count: \(items.count)"))
                         for item in items {
+                            req.logger.info(Logger.Message(stringLiteral: "item: \(item)"))
                             if !item.contains("DS_Store") {
                                 sticker.images.append("/\(id)/\(item)")
                             }
