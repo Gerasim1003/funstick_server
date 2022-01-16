@@ -9,19 +9,18 @@ func routes(_ app: Application) throws {
     app.get("stickers") { req async throws -> [Sticker] in
         do {
             let stickers = try await StickerDB.query(on: req.db).all()
-            return stickers.map { sticker in
+            return try stickers.map { sticker in
                 let sticker = Sticker(sticker)
                 if let id = sticker.id?.uuidString {
                     let fm = FileManager.default
                     let path = app.directory.publicDirectory.appending(id)
                     req.logger.info(Logger.Message(stringLiteral: path))
-                    if let items = try? fm.contentsOfDirectory(atPath: path) {
-                        req.logger.info(Logger.Message(stringLiteral: "count: \(items.count)"))
-                        for item in items {
-                            req.logger.info(Logger.Message(stringLiteral: "item: \(item)"))
-                            if !item.contains("DS_Store") {
-                                sticker.images.append("/\(id)/\(item)")
-                            }
+                    let items = try fm.contentsOfDirectory(atPath: path)
+                    req.logger.info(Logger.Message(stringLiteral: "count: \(items.count)"))
+                    for item in items {
+                        req.logger.info(Logger.Message(stringLiteral: "item: \(item)"))
+                        if !item.contains("DS_Store") {
+                            sticker.images.append("/\(id)/\(item)")
                         }
                     }
                 }
