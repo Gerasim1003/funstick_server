@@ -13,7 +13,7 @@ func routes(_ app: Application) throws {
                 let sticker = Sticker(sticker)
                 if let id = sticker.id?.uuidString {
                     let fm = FileManager.default
-                    let path = app.directory.publicDirectory.appending(id)
+                    let path = app.directory.publicDirectory.appending(id + "/")
                     req.logger.info(Logger.Message(stringLiteral: path))
                     let items = try fm.contentsOfDirectory(atPath: path)
                     req.logger.info(Logger.Message(stringLiteral: "count: \(items.count)"))
