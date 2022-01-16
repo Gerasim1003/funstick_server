@@ -1,6 +1,5 @@
 import Fluent
 import Vapor
-import CloudKit
 
 struct StickerController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
