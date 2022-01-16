@@ -11,7 +11,7 @@ func routes(_ app: Application) throws {
             let stickers = try await StickerDB.query(on: req.db).all()
             return try stickers.map { sticker in
                 let sticker = Sticker(sticker)
-                if let id = sticker.id?.uuidString {
+                if let id = sticker.id?.uuidString.lowercased() {
                     let fm = FileManager.default
                     let path = app.directory.publicDirectory.appending(id + "/")
                     req.logger.info(Logger.Message(stringLiteral: path))
